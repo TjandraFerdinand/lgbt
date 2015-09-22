@@ -11,7 +11,9 @@ class Lp_lgbt extends CI_Controller {
                 $this->load->helper('form');
        		$this->load->library('form_validation');
                 $this->load->database();
+		$this->load->library('session');
                 $this->load->library('email');
+		$this->config->load('email_config', TRUE);
 	 }
 
 
@@ -40,7 +42,7 @@ class Lp_lgbt extends CI_Controller {
                 $this->form_validation->set_rules('month', '月', 'required');
                 $this->form_validation->set_rules('day', '日', 'required');
                 $this->form_validation->set_rules('current_job_type[]', '現在の職種', 'required');
-                $this->form_validation->set_rules('email', 'メールアドレス', 'required|valid_email');
+                $this->form_validation->set_rules('email', 'メールアドレス', 'required|valid_email|is_unique[user.email]');
                 $this->form_validation->set_rules('re-email', '半角英数字のみ。入力確認のため、上記と同じメールアドレスをご入力ください', 'required|matches[email]');
 	//	$this->form_validation->set_message('required', 'Please insert %s');
 
@@ -79,6 +81,8 @@ class Lp_lgbt extends CI_Controller {
                         $post['re-email']   = $this->input->post('re-email');
                         $post['newsletter'] = $this->input->post('newsletter');
 
+			$email_config = $this->config->item('email_config');
+               		 $this->email->initialize($email_config);
                         $this->load->model('Logic_user');
                         $this->Logic_user->insert_user($post);
 
@@ -102,10 +106,19 @@ class Lp_lgbt extends CI_Controller {
 
 	 public function email_user()
         {
-                $this->email->from('ferdinand.reeracoen@gmail.com', 'Admin');
+	        
+		$this->email->from('ferdinand.reeracoen@gmail.com', 'Admin');
                 $this->email->to($this->input->post('email'));
                 $this->email->subject('[LGBT] Success Registered');
-                $this->email->message('CONGRATULATION!! Your Form success registered');
+                $body = <<<HTML
+<html>                
+<body>
+
+<font size="20px"> CONGRATULATION!! Your Form success registered</font>
+</body>
+</html>
+HTML;
+                $this->email->message($body);
 
                 $this->email->send();
         }

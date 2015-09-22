@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>*
 <html lang="ja">
 <head prefix="og: http://ogp.me/ns#">
 <meta charset="utf-8">
@@ -26,7 +26,18 @@
 </dl>
 <p class="explain"> 総合人材会社ネオキャリアグループ・ワイルドカード株式会社とLGBTポータルサイト「2CHOPO（にちょぽ）」が、業界初の【LGBT求職マッチングサービス】を開始します。LGBTについての知識と理解のある企業のみをご紹介しますので、多様性を尊重する価値観のある企業への就職が可能です。以下からワイルドカード株式会社の人材紹介サービス無料会員登録へお進みください。会員になりますとキャリアアドバイザーとの無料転職相談をご利用いただくことができます。</p>
 <!-- <form>-->
-<?php echo form_open(base_url().'register'); ?>
+<?php
+$csrf = array(
+        'csrf_name' => $this->security->get_csrf_token_name(),
+        'csrf_hash' => $this->security->get_csrf_hash()
+	);
+
+ echo form_open(base_url().'register'); 
+echo form_input(array('name'=>$csrf['csrf_name'],'value'=>$csrf['csrf_hash']));
+
+?>
+
+
 <div class="table">
 <table>
 <tr class="name01">
